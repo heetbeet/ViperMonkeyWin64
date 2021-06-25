@@ -13,9 +13,9 @@ pypyurl = "https://downloads.python.org/pypy/pypy2.7-v7.3.5-win64.zip"
 vipermonkeyurl = "https://github.com/decalage2/ViperMonkey/archive/master.zip"
 szipurl = "https://www.7-zip.org/a/7z1900-x64.msi"
 
-pypydir = thisdir.joinpath("build/bin/pypy2.7")
-vipermonkeydir = thisdir.joinpath("build/bin/ViperMonkey")
-szipdir = thisdir.joinpath("build/bin", "7z")
+pypydir = thisdir.joinpath("ViperMonkey/bin/pypy2.7")
+vipermonkeydir = thisdir.joinpath("ViperMonkey/bin/ViperMonkey")
+szipdir = thisdir.joinpath("ViperMonkey/bin", "7z")
 
 pypyexe = pypydir.joinpath("pypy.exe")
 szipexe = szipdir.joinpath("7z.exe")
@@ -73,8 +73,8 @@ for i in vipermonkeydir.joinpath("vipermonkey").glob("*.py"):
     if i.name in ("api.py", "__init__.py"):
         continue
 
-    irel = i.relative_to(thisdir.joinpath("build"))
-    cmdname = thisdir.joinpath("build", i.name[:-3]+".cmd")
+    irel = i.relative_to(thisdir.joinpath("ViperMonkey"))
+    cmdname = thisdir.joinpath("ViperMonkey", i.name[:-3]+".cmd")
     with open(cmdname, "w") as fw:
         fw.write(dedent(f"""
             @call "%~dp0\\bin\\pypy2.7\\pypy.exe" "{irel}" %*
@@ -82,3 +82,7 @@ for i in vipermonkeydir.joinpath("vipermonkey").glob("*.py"):
             """)
         )
 
+
+os.chdir(thisdir)
+os.remove("ViperMonkey.7z")
+subprocess.call([szipexe, "a", "ViperMonkey.7z", "ViperMonkey\\"])
